@@ -260,7 +260,7 @@ export default function Page() {
         const controlValues = headersRuta69
           .map((header, i) =>
             subdividedColumns.includes(i)
-              ? controlMap[header.toUpperCase()]
+              ? (controlMap[header.toUpperCase()] ?? ["", "", ""])
               : null,
           )
           .filter((v) => v !== null) as string[][];
@@ -539,28 +539,30 @@ export default function Page() {
                     {visibleData.map((cell, cellIndex) => (
                       <React.Fragment key={cellIndex}>
                         {subdividedColumns.includes(cellIndex) ? (
-                          (cell as string[]).map((value, i) => {
-                            let bgColor = "";
-                            if (hasHours) {
-                              bgColor =
-                                i === 0
-                                  ? "bg-[#fdecc1]"
-                                  : i === 1
-                                    ? "bg-[#cbfdc1]"
-                                    : "bg-[#c1fdeb]";
-                            } else {
-                              bgColor = "bg-gray-200";
-                            }
+                          (Array.isArray(cell) ? cell : ["", "", ""]).map(
+                            (value, i) => {
+                              let bgColor = "";
+                              if (hasHours) {
+                                bgColor =
+                                  i === 0
+                                    ? "bg-[#fdecc1]"
+                                    : i === 1
+                                      ? "bg-[#cbfdc1]"
+                                      : "bg-[#c1fdeb]";
+                              } else {
+                                bgColor = "bg-gray-200";
+                              }
 
-                            return (
-                              <td
-                                key={`${cellIndex}-${i}`}
-                                className={`border border-gray-500 py-1 text-xs text-center ${bgColor} text-gray-800`}
-                              >
-                                {value}
-                              </td>
-                            );
-                          })
+                              return (
+                                <td
+                                  key={`${cellIndex}-${i}`}
+                                  className={`border border-gray-500 py-1 text-xs text-center ${bgColor} text-gray-800`}
+                                >
+                                  {value}
+                                </td>
+                              );
+                            },
+                          )
                         ) : (
                           <td className="border border-gray-500 px-2 py-1 text-xs text-center dark:text-gray-300">
                             {cell}
