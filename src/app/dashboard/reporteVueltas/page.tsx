@@ -52,13 +52,12 @@ export default function ReporteVueltasPage() {
       // Format date from yyyy-MM-dd to dd/MM/yyyy
       const [year, month, day] = fecha.split("-");
       const formattedDate = `${day}/${month}/${year}`;
-      
-      // The API requires ruta=25 always, as per instructions
+
       const response = await fetch(
         `https://villa.velsat.pe:8443/api/Caja/vueltas?fecha=${encodeURIComponent(
-          formattedDate
-        )}&ruta=69`
-      )
+          formattedDate,
+        )}&ruta=${ruta}`,
+      );
 
       if (!response.ok) {
         throw new Error("Error fetching data");
@@ -77,16 +76,17 @@ export default function ReporteVueltasPage() {
   // Calculate the maximum number of vueltas to determine table columns
   const maxVueltas = data.reduce(
     (max, item) => Math.max(max, item.listaDespachos?.length || 0),
-    0
+    0,
   );
 
   return (
     <div className="flex flex-col gap-4 p-4">
- 
-
       <div className="flex flex-col gap-4 md:flex-row md:items-end bg-white p-4 border shadow-sm">
         <div className="grid  max-w-sm items-center gap-1.5">
-          <label htmlFor="fecha" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <label
+            htmlFor="fecha"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
             Fecha
           </label>
           <Input
@@ -98,7 +98,10 @@ export default function ReporteVueltasPage() {
         </div>
 
         <div className="grid max-w-sm items-center gap-1.5">
-          <label htmlFor="ruta" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <label
+            htmlFor="ruta"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
             Ruta
           </label>
           <Select value={ruta} onValueChange={setRuta}>
@@ -107,11 +110,12 @@ export default function ReporteVueltasPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="69">1148 - Callao - Lima</SelectItem>
+              <SelectItem value="71">1149 - Callao - Lima</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <Button onClick={handleSearch} disabled={loading || !fecha} >
+        <Button onClick={handleSearch} disabled={loading || !fecha}>
           {loading ? (
             "Buscando..."
           ) : (
@@ -127,11 +131,30 @@ export default function ReporteVueltasPage() {
           <Table>
             <TableHeader>
               <TableRow className="bg-blue-50">
-                <TableHead rowSpan={2} className="w-[50px] text-center font-bold text-primary border-r">Item</TableHead>
-                <TableHead rowSpan={2} className="w-[100px] font-bold text-primary border-r">Unidad</TableHead>
-                <TableHead rowSpan={2} className="min-w-[200px] font-bold text-primary border-r">Conductor</TableHead>
+                <TableHead
+                  rowSpan={2}
+                  className="w-[50px] text-center font-bold text-primary border-r"
+                >
+                  Item
+                </TableHead>
+                <TableHead
+                  rowSpan={2}
+                  className="w-[100px] font-bold text-primary border-r"
+                >
+                  Unidad
+                </TableHead>
+                <TableHead
+                  rowSpan={2}
+                  className="min-w-[200px] font-bold text-primary border-r"
+                >
+                  Conductor
+                </TableHead>
                 {Array.from({ length: maxVueltas }).map((_, index) => (
-                  <TableHead key={index} colSpan={2} className="text-center font-bold text-primary bg-blue-50/50 border-b border-r last:border-r-0">
+                  <TableHead
+                    key={index}
+                    colSpan={2}
+                    className="text-center font-bold text-primary bg-blue-50/50 border-b border-r last:border-r-0"
+                  >
                     Vuelta {index + 1}
                   </TableHead>
                 ))}
@@ -190,10 +213,12 @@ export default function ReporteVueltasPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={3 + (maxVueltas * 2)}
+                    colSpan={3 + maxVueltas * 2}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    {hasSearched ? "No se encontraron resultados." : "Seleccione una fecha y haga clic en Buscar."}
+                    {hasSearched
+                      ? "No se encontraron resultados."
+                      : "Seleccione una fecha y haga clic en Buscar."}
                   </TableCell>
                 </TableRow>
               )}

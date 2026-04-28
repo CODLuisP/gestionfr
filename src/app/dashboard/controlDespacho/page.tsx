@@ -65,8 +65,7 @@ interface Despacho {
 }
 
 export default function Page() {
-  const [selectedRoute] = useState("69");
-
+  const [selectedRoute, setSelectedRoute] = useState("69");
   const getTodayLocal = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -308,9 +307,15 @@ export default function Page() {
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:w-28 xl:w-22 flex-shrink-0">
                 Ruta:
               </label>
-              <div className="w-full sm:min-w-[250px] xl:min-w-[230px] border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-gray-300">
-                1148 - Callao - Lima
-              </div>
+              <select
+                value={selectedRoute}
+                onChange={(e) => setSelectedRoute(e.target.value)}
+                className="w-full sm:min-w-[250px] xl:min-w-[230px] border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                disabled={isLoading}
+              >
+                <option value="69">1148 - Callao - Lima</option>
+                <option value="71">1149 - Callao - Lima</option>
+              </select>
             </div>
           </div>
           {/* Fecha */}
